@@ -37,6 +37,8 @@ partitioning() {
 
     cfdisk
 
+    lsblk
+
     echo "EFI partition (/dev/sda1): "
     read EFI_PARTITION
 
