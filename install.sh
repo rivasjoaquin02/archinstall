@@ -5,8 +5,8 @@ POST_PKGS = "post.list"
 PACMAN_CONF = "pacman.conf"
 
 # Jump to the location of the script
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd )
+cd "$SCRIPT_DIR"
 
 
 check_iso() {
@@ -21,7 +21,8 @@ keyboard_layout() {
 
 check_efi() {
     echo -e "\e[95m**\e[0m Check youre in EFI mode \e[95m**\e[0m"
-    if ls /sys/firmware/efi/efivars &> /dev/null; then
+    # if ls /sys/firmware/efi/efivars &> /dev/null; then
+    if [[ -d "/sys/firmware/efi/efivars" ]]; then
         echo "😎 Correctly in EFI."
     else
         echo "😔 Youre not in EFI."
@@ -39,7 +40,7 @@ connect_wifi() {
     echo "Connect Wifi (y/n)"
     read answer
 
-    if [[ $answer == "y" ]] || [[ $answer == "Y" ]] then
+    if [[ "$answer" == "y"  || "$answer" == "Y" ]]; then
         echo -e "\e[95m**\e[0m Installing wifi-menu \e[95m**\e[0m"
         sudo pacman -S --needed --noconfirm wifi-menu
         wifi-menu
@@ -49,8 +50,8 @@ connect_wifi() {
 change_mirrors() {
     echo -e "\e[95m**\e[0m Change Repo to uo.edu.cu \e[95m**\e[0m"
     
-    mv $2 $2.backup
-    cp $1 $2
+    mv "$2" "$2".backup
+    cp "$1" "$2"
 }
 
 update_gpg_keys() {
@@ -71,7 +72,7 @@ install_base() {
     # grep -o: tells grep to print only the parts that match with the pattern 
     # tr '\n' ' ' -> this replace endlines with ' '
 
-    pacstrap /mnt $(grep -o '^[^#]*' $BASE_PKGS | tr '\n' ' ')
+    pacstrap /mnt $(grep -o '^[^#]*' "$BASE_PKGS" | tr '\n' ' ')
 }
 
 generate_fstab() {
@@ -89,20 +90,20 @@ change_root() {
 post_install() {
     echo -e "\e[95m**\e[0m Other Packages \e[95m**\e[0m"
 
-    pacman -Sy $(grep -o '^[^#]*' $POST_PKGS | tr '\n' ' ')
+    pacman -Sy $(grep -o '^[^#]*' "$POST_PKGS" | tr '\n' ' ')
 }
 
 add_user() {
     echo -e "\e[95m**\e[0m Creating User: $1 \e[95m**\e[0m"
 
     echo "1. creating user"
-    sudo useradd -m $1
+    sudo useradd -m "$1"
     
-    echo "3. change password"
-    sudo passwd $1
+    echo "2. change password"
+    sudo passwd "$1"
 
-    echo "2. adding user to wheel group"
-    sudo usermod -aG wheel $1
+    echo "3. adding user to wheel group"
+    sudo usermod -aG wheel "$1"
 
     #echo "Add user privileges"
     #Uncomment `%wheel ALL=(ALL:ALL) NOPASSWD: ALL` group.
@@ -113,7 +114,7 @@ timezone() {
 
     # timedatectl set-local-rtc 1 -> for dual boot setups
     echo "1. set timezone to $1"
-    ln -sf /usr/share/zoneinfo/$1 /etc/localtime
+    ln -sf "/usr/share/zoneinfo/$1" /etc/localtime
 
     echo "2. sync hardware clock"
     hwclock --systohc
@@ -158,10 +159,10 @@ enable_aur() {
     cd yay-git
     
     echo "2. Changing Owner of /yay-git"
-    sudo chown -R <user>:<user> yay-git
+    sudo chown -R "$1:$1" yay-git
 
     echo "3. Compiling ..."
-    sudo pacman -S --needed go
+    sudo pacman -S --needed --noconfirm go
     makepkg -si
 
     echo "4. Updating AUR"
@@ -203,6 +204,6 @@ locale
 
 grub
 enable_network
-enable_aur
+enable_aur "strange"
 
 finnish
