@@ -34,6 +34,43 @@ check_efi() {
 
 partitioning() {
     echo "partitioning proccess"
+
+    cfdisk
+
+    echo "EFI partition (/dev/sda1): "
+    read EFI_PARTITION
+
+    echo "ROOT partition (/dev/sda2): "
+    read ROOT_PARTITION
+
+    echo "formating $EFI_PARTITION as FAT32"
+    mkfs.fat -F32 $EFI_PARTITION
+
+    echo "formating $ROOT_PARTITION as BTRFS"
+    mkfs.btrf -L arch $ROOT_PARTITION
+
+    echo "mounting $ROOT_PARTITION to /mnt"
+    mount $ROOT_PARTITION /mnt
+
+    echo "creating subvolumes"
+    btrfs subvolume create @
+    btrfs subvolume create @root
+    btrfs subvolume create @home
+    btrfs subvolume create @snapshots
+
+    echo "unmounting $ROOT_PARTITION"
+    umount /mnt
+
+    echo "mounting $ROOT_PARTITION to /mnt"
+    mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=@root $ROOT_PARTITION /mnt
+
+    echo "creating mount points"
+    mkdir /mnt/{home,boot}
+    mkdir /mnt/boot/efi
+    mount /dev/sda1 /mnt/boot/efi
+
+    echo "mounting home subvolume to /mnt/home"
+    mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=@home $ROOT_PARTITION /mnt/home
 }
 
 connect_wifi() {
@@ -184,7 +221,7 @@ keyboard_layout
 check_efi
 
 echo "PARTITION"
-partitioning
+# partitioning
 
 
 echo "INSTALL"
