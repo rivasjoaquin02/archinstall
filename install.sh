@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-BASE_PKGS = "base.list"
-POST_PKGS = "post.list"
-PACMAN_CONF = "pacman.conf"
-DELAY = "5s"
+BASE_PKGS="base.list"
+POST_PKGS="post.list"
+PACMAN_CONF="pacman.conf"
+DELAY="5s"
 
 # Jump to the location of the script
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd )
