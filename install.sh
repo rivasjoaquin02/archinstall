@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-BASE_PKGS="base.list"
-POST_PKGS="post.list"
-PACMAN_CONF="pacman.conf"
+BASE_PKGS="./base.list"
+POST_PKGS="./post.list"
+PACMAN_CONF="./pacman.conf"
 DELAY="5s"
 
 # Jump to the location of the script
@@ -16,10 +16,10 @@ main() {
     #check_iso
     keyboard_layout
 
-    delay $DELAY
+    delay 0.3s
     check_efi
 
-    delay $DELAY
+    delay 0.3s
     clear
     partitioning
 
@@ -29,7 +29,6 @@ main() {
     delay $DELAY
     connect_wifi
 
-    delay $DELAY
     change_mirrors $PACMAN_CONF "/etc/pacman.conf"
     
     delay $DELAY
@@ -120,11 +119,11 @@ partitioning() {
 
     if [[ "$format_efi_answer" == "y" || "$format_efi_answer" == "Y" ]]; then
         echo "formating $EFI_PARTITION as FAT32"
-        mkfs.fat -F32 $EFI_PARTITION
+        mkfs.fat -F32 -f $EFI_PARTITION
     fi
 
     echo "formating $ROOT_PARTITION as BTRFS"
-    mkfs.btrfs -L arch $ROOT_PARTITION
+    mkfs.btrfs -L -f arch $ROOT_PARTITION
 
     echo "mounting $ROOT_PARTITION to /mnt"
     mount $ROOT_PARTITION /mnt
@@ -305,4 +304,4 @@ finish() {
     reboot
 }
 
-
+main >> install.log
