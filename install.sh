@@ -72,7 +72,7 @@ main() {
     enable_aur "strange"
 
     delay $DELAY
-    finnish
+    finish
 }
 
 
@@ -229,8 +229,8 @@ add_user() {
     echo "3. adding user to wheel group"
     sudo usermod -aG wheel "$1"
 
-    #echo "Add user privileges"
-    #Uncomment `%wheel ALL=(ALL:ALL) NOPASSWD: ALL` group.
+    echo "4. Add user privileges"
+    sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/g' /etc/sudoers
 }
 
 timezone() {
@@ -297,7 +297,7 @@ enable_aur() {
 
 }
 
-finnish() {
+finish() {
     echo -e "\e[95m**\e[0m Exiting ... \e[95m**\e[0m"
 
     exit
