@@ -56,7 +56,7 @@ partitioning() {
     mkfs.fat -F32 $EFI_PARTITION
 
     echo "formating $ROOT_PARTITION as BTRFS"
-    mkfs.btrf -L arch $ROOT_PARTITION
+    mkfs.btrfs -L arch $ROOT_PARTITION
 
     echo "mounting $ROOT_PARTITION to /mnt"
     mount $ROOT_PARTITION /mnt
