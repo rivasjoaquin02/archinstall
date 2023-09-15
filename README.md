@@ -1,16 +1,22 @@
 
 # Installation of Arch Linux
 
-https://wiki.archlinux.org/title/installation_guide
+[Official ArchLinux Guide](https://wiki.archlinux.org/title/installation_guide)
 
-## Installation
 
-> [!Note] Check Hash
-> 
->```powershell
->certutil -hashfile ./archlinux.iso SHA256	
->```
-> 
+## Script 
+```shell
+git clone https://github.com/rivasjoaquin02/archinstall
+cd archinstall  
+./install.sh
+```
+
+## Manual Installation
+
+Check Hash
+```shell
+certutil -hashfile ./archlinux.iso SHA256	
+```
 
 1. Change keyboard layout
 ```sh
@@ -53,10 +59,8 @@ mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=@home /de
 
 4. Connect WIFI
 ```bash
-iwctl
-station wlan0 show
-station wlan0 scan
-station wlan0 connect for <SSID> psk
+sudo pacman -S wifi-menu
+wifi-menu
 ```
 
 5. Update GPG keys
@@ -140,7 +144,6 @@ reboot
 ```
 
 
-
 ## post-install
 
 Connect wifi
@@ -169,65 +172,3 @@ makepkg -si
 
 yay -Syu
 ```
-
-## HyperLand (WM)
-(with github.com/soldoestech/hyprv3.git)
-
-```bash
-git clone https://github.com/soldoestech/hyprv3.git
-cd hyprv3
-sudo chmod +x set-hypr
-```
-
-
-| Package                       | Description                                                                                                  |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| linux-headers                 | Headers and scripts for building modules for the Linux kernel                                                |
-| nvidia-dkms                   | NVIDIA drivers - module sources                                                                              |
-| qt5-wayland                   | Provides APIs for Wayland                                                                                    |
-| qt5ct                         | Qt5 Configuration Utility                                                                                    |
-| libva                         | Video Acceleration (VA) API for Linux                                                                        |
-| libva-nvidia-driver-git [AUR] | VA-API implementation that uses NVDEC as a backend (git version)                                             |
-| ---                           | ---                                                                                                          |
-| hyprland                      | a highly customizable dynamic tiling Wayland compositor                                                      |
-| kitty                         | A modern, hackable, featureful, OpenGL-based terminal emulator                                               |
-| jq                            | Command-line JSON processor                                                                                  |
-| mako                          | Lightweight notification daemon for Wayland                                                                  |
-| wofi                          | launcher for wlroots-based wayland compositors                                                               |
-| xdg-desktop-portal-hyprland   | xdg-desktop-portal backend for hyprland                                                                      |
-| swappy                        | A Wayland native snapshot editing tool                                                                       |
-| grim                          | Screenshot utility for Wayland                                                                               |
-| slurp                         | Select a region in a Wayland compositor                                                                      |
-| thunar                        | Modern, fast and easy-to-use file manager for Xfce                                                           |
-| polkit-gnome                  | Legacy polkit authentication agent for GNOME                                                                 |
-| python-requests               | Python HTTP for Humans                                                                                       |
-| pamixer                       | Pulseaudio command-line mixer like amixer                                                                    |
-| pavucontrol                   | PulseAudio Volume Control                                                                                    |
-| brightnessctl                 | Lightweight brightness control tool                                                                          |
-| bluez                         | Daemons for the bluetooth protocol stack                                                                     |
-| bluez-utils                   | Development and debugging utilities for the bluetooth protocol stack                                         |
-| blueman                       | GTK+ Bluetooth Manager                                                                                       |
-| network-manager-applet        | Applet for managing network connection                                                                       |
-| gvfs                          | Virtual filesystem implementation for GIO                                                                    |
-| thunar-archive-plugin         | Adds archive operations to the Thunar file context menus                                                     |
-| file-roller                   | Create and modify archives                                                                                   |
-| btop                          | A monitor of system resources, bpytop ported to C++                                                          |
-| pacman-contrib                | Contributed scripts and tools for pacman systems                                                             |
-| starship                      | The cross-shell prompt for astronauts                                                                        |
-| ttf-jetbrains-mono-nerd       | Patched font JetBrains Mono from nerd fonts library                                                          |
-| noto-fonts-emoji              | Google Noto emoji fonts                                                                                      |
-| lxappearance                  | Feature-rich GTK+ theme switcher of the LXDE Desktop                                                         |
-| xfce4-settings                | Xfce's Configuration System                                                                                  |
-| sddm-git [AUR]                | The Simple Desktop Display Manager                                                                           |
-| sddm-sugar-candy-git [AUR]    | Sugar Candy is the sweetest login theme available for the SDDM display manager                               |
-| waybar-hyprland [AUR]         | Highly customizable Wayland bar for Sway and Wlroots based compositors, with workspaces support for Hyprland |
-| swww [AUR]                    | Efficient animated wallpaper daemon for wayland, controlled at runtime.                                      |
-| swaylock-effects [AUR]        | A fancier screen locker for Wayland.                                                                         |
-| wlogout [AUR]                 | Logout menu for wayland                                                                                      |
-
-* [sddm-git](https://builds.garudalinux.org/repos/chaotic-aur/x86_64/#sddm-git)
-* sddm-sugar-candy-git
-* [waybar-hyprland](https://builds.garudalinux.org/repos/chaotic-aur/x86_64/#waybar-hyprland)
-* [swaylock-effects](https://builds.garudalinux.org/repos/chaotic-aur/x86_64/#swaylock-effects)
-* [wlogout](https://builds.garudalinux.org/repos/chaotic-aur/x86_64/#wlogout)
-* swww
