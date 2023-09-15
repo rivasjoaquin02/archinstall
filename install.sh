@@ -42,6 +42,7 @@ connect_wifi() {
     if [[ $answer == "y" ]] || [[ $answer == "Y" ]] then
         echo -e "\e[95m**\e[0m Installing wifi-menu \e[95m**\e[0m"
         sudo pacman -S --needed --noconfirm wifi-menu
+        wifi-menu
     fi
 }
 
@@ -176,21 +177,22 @@ finnish() {
 }
 
 
-# 1. Pre-Requisits
+echo "PRE_REQUISITS"
 #check_iso
 keyboard_layout
 check_efi
 
-# 2. Partitioning
+echo "PARTITION"
 partitioning
 
-# 3. Installing
+
+echo "INSTALL"
 connect_wifi
 change_mirrors $PACMAN_CONF "/etc/pacman.conf"
 update_gpg_keys
 install_base
 
-# 4. Post-Requisits
+echo "POST_INSTALL"
 generate_fstab
 change_mirrors $PACMAN_CONF "/mnt/etc/pacman.conf"
 change_root
