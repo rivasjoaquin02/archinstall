@@ -107,7 +107,6 @@ partitioning() {
     echo "partitioning proccess"
 
     cfdisk
-
     lsblk
 
     echo "EFI partition (/dev/sda1): "
@@ -126,10 +125,12 @@ partitioning() {
     mount $ROOT_PARTITION /mnt
 
     echo "creating subvolumes"
+    cd /mnt
     btrfs subvolume create @
     btrfs subvolume create @root
     btrfs subvolume create @home
     btrfs subvolume create @snapshots
+    cd ..
 
     echo "unmounting $ROOT_PARTITION"
     umount /mnt
@@ -140,7 +141,7 @@ partitioning() {
     echo "creating mount points"
     mkdir /mnt/{home,boot}
     mkdir /mnt/boot/efi
-    mount /dev/sda1 /mnt/boot/efi
+    mount $EFI_PARTITION /mnt/boot/efi
 
     echo "mounting home subvolume to /mnt/home"
     mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=@home $ROOT_PARTITION /mnt/home
