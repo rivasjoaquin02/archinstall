@@ -118,7 +118,7 @@ partitioning() {
     echo "ROOT partition (/dev/sda2): "
     read ROOT_PARTITION
 
-    if [[format_efi_answer == "y" || format_efi_answer == "Y"]]; then
+    if [[ "$format_efi_answer" == "y" || "$format_efi_answer" == "Y" ]]; then
         echo "formating $EFI_PARTITION as FAT32"
         mkfs.fat -F32 $EFI_PARTITION
     fi
