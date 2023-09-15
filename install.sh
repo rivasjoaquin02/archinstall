@@ -10,6 +10,72 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd )
 cd "$SCRIPT_DIR"
 
 
+main() {
+    echo "----------------------------------"
+    echo "PRE_REQUISITS"
+    #check_iso
+    keyboard_layout
+
+    delay $DELAY
+    check_efi
+
+    delay $DELAY
+    clear
+    partitioning
+
+    echo "----------------------------------"
+    echo "INSTALL"
+
+    delay $DELAY
+    connect_wifi
+
+    delay $DELAY
+    change_mirrors $PACMAN_CONF "/etc/pacman.conf"
+    
+    delay $DELAY
+    update_gpg_keys
+
+    delay $DELAY
+    install_base
+
+    echo "----------------------------------"
+    echo "POST_INSTALL"
+
+    delay $DELAY
+    generate_fstab
+
+    delay $DELAY
+    change_mirrors $PACMAN_CONF "/mnt/etc/pacman.conf"
+
+    delay $DELAY
+    change_root
+
+    delay $DELAY
+    post_install
+
+    delay $DELAY
+    add_user "strange"
+
+    delay $DELAY
+    timezone "America/Havana"
+
+    delay $DELAY
+    locale
+
+    delay $DELAY
+    grub
+
+    delay $DELAY
+    enable_network
+
+    delay $DELAY
+    enable_aur "strange"
+
+    delay $DELAY
+    finnish
+}
+
+
 delay() {
     sleep $1
 }
@@ -22,7 +88,6 @@ check_iso() {
 keyboard_layout() {
     echo -e "\e[95m**\e[0m Keyboard Layout to US \e[95m**\e[0m"
     loadkeys us
-    delay $DELAY
 }
 
 check_efi() {
@@ -36,7 +101,6 @@ check_efi() {
         echo "And re-run the script"
         return 1
     fi
-    delay $DELAY
 }
 
 partitioning() {
@@ -81,7 +145,6 @@ partitioning() {
     echo "mounting home subvolume to /mnt/home"
     mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=@home $ROOT_PARTITION /mnt/home
     
-    delay $DELAY
 }
 
 connect_wifi() {
@@ -94,7 +157,6 @@ connect_wifi() {
         wifi-menu
     fi
 
-    delay $DELAY
 }
 
 change_mirrors() {
@@ -103,7 +165,6 @@ change_mirrors() {
     mv "$2" "$2".backup
     cp "$1" "$2"
 
-    delay $DELAY
 }
 
 update_gpg_keys() {
@@ -113,7 +174,6 @@ update_gpg_keys() {
     pacman-key --populate archlinux 
     pacman -Sy archlinux-keyring
 
-    delay $DELAY
 }
 
 install_base() {
@@ -128,7 +188,6 @@ install_base() {
 
     pacstrap /mnt $(grep -o '^[^#]*' "$BASE_PKGS" | tr '\n' ' ')
 
-    delay $DELAY
 }
 
 generate_fstab() {
@@ -136,7 +195,6 @@ generate_fstab() {
 
     genfstab -U /mnt >> /mnt/etc/fstab
 
-    delay $DELAY
 }
 
 change_root() {
@@ -144,7 +202,6 @@ change_root() {
 
     arch-chroot /mnt
 
-    delay $DELAY
 }
 
 post_install() {
@@ -152,7 +209,6 @@ post_install() {
 
     pacman -Sy $(grep -o '^[^#]*' "$POST_PKGS" | tr '\n' ' ')
 
-    delay $DELAY
 }
 
 add_user() {
@@ -169,7 +225,6 @@ add_user() {
 
     #echo "Add user privileges"
     #Uncomment `%wheel ALL=(ALL:ALL) NOPASSWD: ALL` group.
-    delay $DELAY
 }
 
 timezone() {
@@ -185,7 +240,6 @@ timezone() {
     echo "3. set local-rtc for compatibility with windows"
     timedatectl set-local-rtc 1
 
-    delay $DELAY
 }
 
 locale() {
@@ -194,7 +248,6 @@ locale() {
     sed -i 's/#en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen
     locale-gen
 
-    delay $DELAY
 }
 
 grub() {
@@ -209,14 +262,12 @@ grub() {
     echo "3. Creating grub.cfg"
     grub-mkconfig -o /boot/grub/grub.cfg
 
-    delay $DELAY
 }
 
 enable_network() {
     echo -e "\e[95m**\e[0m Enable NetworkManager \e[95m**\e[0m"
 
     systemctl enable NetworkManager
-    delay $DELAY
 }
 
 enable_aur() {
@@ -238,7 +289,6 @@ enable_aur() {
     echo "4. Updating AUR"
     yay -Sy
 
-    delay $DELAY
 }
 
 finnish() {
@@ -250,31 +300,3 @@ finnish() {
 }
 
 
-echo "PRE_REQUISITS"
-#check_iso
-keyboard_layout
-check_efi
-
-echo "PARTITION"
-partitioning
-
-echo "INSTALL"
-connect_wifi
-change_mirrors $PACMAN_CONF "/etc/pacman.conf"
-update_gpg_keys
-install_base
-
-echo "POST_INSTALL"
-generate_fstab
-change_mirrors $PACMAN_CONF "/mnt/etc/pacman.conf"
-change_root
-post_install
-add_user "strange"
-timezone "America/Havana"
-locale
-
-grub
-enable_network
-enable_aur "strange"
-
-finnish
