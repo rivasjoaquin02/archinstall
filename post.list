@@ -1,0 +1,17 @@
+base-devel # Group of packages useful for building and compiling from source
+sudo # Provides a way for non-root users to run commands as root
+vim # text editor
+git # Version control system 
+networkmanager # Program for providing detection and configuration for systems to automatically connect to networks 
+pulseaudio # A sound system for POSIX OSes, meaning that it is a proxy for your sound applications
+alsa-utils # An advanced Linux sound architecture, provides audio and MIDI functionality to the Linux operating system
+
+btrfs-progs # manage BTRFS filesystem
+ntfs-3g # manage NTFS filesystem
+
+# el de dualboot falta
+grub # bootloader
+efibootmgr # UEFI/EFI boot entries
+
+tlp # energy saving
+go # needed for yay

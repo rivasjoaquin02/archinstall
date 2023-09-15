@@ -1,0 +1,6 @@
+base # the base system
+linux-lts # linux kernel
+linux-lts-headers # Headers and scripts for building modules for the Linux kernel
+linux-firmware # hardware firmware
+intel-ucode # microcode for intel processor
+coreutils # basic command line utils (ls, cp, mv, rm ...)
