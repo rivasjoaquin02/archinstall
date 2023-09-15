@@ -221,8 +221,7 @@ keyboard_layout
 check_efi
 
 echo "PARTITION"
-# partitioning
-
+partitioning
 
 echo "INSTALL"
 connect_wifi
