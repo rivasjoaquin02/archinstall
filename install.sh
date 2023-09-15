@@ -42,7 +42,7 @@ connect_wifi() {
 
     if [[ "$answer" == "y"  || "$answer" == "Y" ]]; then
         echo -e "\e[95m**\e[0m Installing wifi-menu \e[95m**\e[0m"
-        sudo pacman -S --needed --noconfirm wifi-menu
+        sudo pacman -S --needed  wifi-menu
         wifi-menu
     fi
 }
@@ -134,7 +134,7 @@ grub() {
     echo -e "\e[95m**\e[0m Installing GRUB \e[95m**\e[0m"
     
     echo "1. Install grub pkg"
-    pacman -S --noconfirm --needed grub efibootmgr
+    pacman -S  --needed grub efibootmgr
 
     echo "2. Install grub in /boot/efi"
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
@@ -162,7 +162,7 @@ enable_aur() {
     sudo chown -R "$1:$1" yay-git
 
     echo "3. Compiling ..."
-    sudo pacman -S --needed --noconfirm go
+    sudo pacman -S --needed  go
     makepkg -si
 
     echo "4. Updating AUR"
