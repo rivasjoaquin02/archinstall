@@ -7,8 +7,10 @@
 ## Script 
 ```shell
 git clone https://github.com/rivasjoaquin02/archinstall
+
 cd archinstall  
-./install.sh
+chmod +x install.sh
+sudo ./install.sh
 ```
 
 ## Manual Installation
