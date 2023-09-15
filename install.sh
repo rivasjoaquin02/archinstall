@@ -3,11 +3,16 @@
 BASE_PKGS = "base.list"
 POST_PKGS = "post.list"
 PACMAN_CONF = "pacman.conf"
+DELAY = "5s"
 
 # Jump to the location of the script
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd )
 cd "$SCRIPT_DIR"
 
+
+delay() {
+    sleep $1
+}
 
 check_iso() {
     echo -e "\e[95m**\e[0m  Check ISO Hash \e[95m**\e[0m"
@@ -17,6 +22,7 @@ check_iso() {
 keyboard_layout() {
     echo -e "\e[95m**\e[0m Keyboard Layout to US \e[95m**\e[0m"
     loadkeys us
+    delay $DELAY
 }
 
 check_efi() {
@@ -30,6 +36,7 @@ check_efi() {
         echo "And re-run the script"
         return 1
     fi
+    delay $DELAY
 }
 
 partitioning() {
@@ -73,6 +80,8 @@ partitioning() {
 
     echo "mounting home subvolume to /mnt/home"
     mount -o noatime,space_cache=v2,compress=zstd,ssd,discard=async,subvol=@home $ROOT_PARTITION /mnt/home
+    
+    delay $DELAY
 }
 
 connect_wifi() {
@@ -84,6 +93,8 @@ connect_wifi() {
         sudo pacman -S --needed  wifi-menu
         wifi-menu
     fi
+
+    delay $DELAY
 }
 
 change_mirrors() {
@@ -91,6 +102,8 @@ change_mirrors() {
     
     mv "$2" "$2".backup
     cp "$1" "$2"
+
+    delay $DELAY
 }
 
 update_gpg_keys() {
@@ -99,6 +112,8 @@ update_gpg_keys() {
     pacman-key --init
     pacman-key --populate archlinux 
     pacman -Sy archlinux-keyring
+
+    delay $DELAY
 }
 
 install_base() {
@@ -112,24 +127,32 @@ install_base() {
     # tr '\n' ' ' -> this replace endlines with ' '
 
     pacstrap /mnt $(grep -o '^[^#]*' "$BASE_PKGS" | tr '\n' ' ')
+
+    delay $DELAY
 }
 
 generate_fstab() {
     echo -e "\e[95m**\e[0m Generate fstab \e[95m**\e[0m"
 
     genfstab -U /mnt >> /mnt/etc/fstab
+
+    delay $DELAY
 }
 
 change_root() {
     echo -e "\e[95m**\e[0m Change Root \e[95m**\e[0m"
 
     arch-chroot /mnt
+
+    delay $DELAY
 }
 
 post_install() {
     echo -e "\e[95m**\e[0m Other Packages \e[95m**\e[0m"
 
     pacman -Sy $(grep -o '^[^#]*' "$POST_PKGS" | tr '\n' ' ')
+
+    delay $DELAY
 }
 
 add_user() {
@@ -146,6 +169,7 @@ add_user() {
 
     #echo "Add user privileges"
     #Uncomment `%wheel ALL=(ALL:ALL) NOPASSWD: ALL` group.
+    delay $DELAY
 }
 
 timezone() {
@@ -160,6 +184,8 @@ timezone() {
 
     echo "3. set local-rtc for compatibility with windows"
     timedatectl set-local-rtc 1
+
+    delay $DELAY
 }
 
 locale() {
@@ -167,6 +193,8 @@ locale() {
 
     sed -i 's/#en_US.UTF-8/en_US.UTF-8/g' /etc/locale.gen
     locale-gen
+
+    delay $DELAY
 }
 
 grub() {
@@ -180,12 +208,15 @@ grub() {
     
     echo "3. Creating grub.cfg"
     grub-mkconfig -o /boot/grub/grub.cfg
+
+    delay $DELAY
 }
 
 enable_network() {
     echo -e "\e[95m**\e[0m Enable NetworkManager \e[95m**\e[0m"
 
     systemctl enable NetworkManager
+    delay $DELAY
 }
 
 enable_aur() {
@@ -206,6 +237,8 @@ enable_aur() {
 
     echo "4. Updating AUR"
     yay -Sy
+
+    delay $DELAY
 }
 
 finnish() {
